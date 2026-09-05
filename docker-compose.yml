@@ -1,0 +1,21 @@
+services:
+  comfort-service:
+    build: ./services/comfort-service
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+
+  telemetry-service:
+    build: ./services/telemetry-service
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+
+  dashboard-service:
+    build: ./services/dashboard-service
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
