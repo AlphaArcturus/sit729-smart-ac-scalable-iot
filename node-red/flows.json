@@ -55,7 +55,7 @@
         "id": "c1816f8600a0493c",
         "type": "debug",
         "z": "e58c95b455aa3fff",
-        "name": "Valid telemetry",
+        "name": "Telemetry storage result",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -64,8 +64,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1220,
-        "y": 440,
+        "x": 1790,
+        "y": 260,
         "wires": []
     },
     {
@@ -81,7 +81,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1080,
+        "x": 1000,
         "y": 320,
         "wires": []
     },
@@ -97,7 +97,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1100,
+        "x": 1020,
         "y": 260,
         "wires": [
             [
@@ -146,7 +146,7 @@
         "id": "fc6f7dfba4ef9418",
         "type": "http request",
         "z": "e58c95b455aa3fff",
-        "name": "",
+        "name": "Send to comfort service",
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
@@ -158,11 +158,11 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 1390,
+        "x": 1270,
         "y": 260,
         "wires": [
             [
-                "e1fb9a95b8fc5d77"
+                "393e5d9bc2a2e070"
             ]
         ]
     },
@@ -179,9 +179,33 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1610,
-        "y": 260,
+        "x": 1210,
+        "y": 640,
         "wires": []
+    },
+    {
+        "id": "393e5d9bc2a2e070",
+        "type": "http request",
+        "z": "e58c95b455aa3fff",
+        "name": "Store telemetry decision",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:3002/telemetry",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1530,
+        "y": 260,
+        "wires": [
+            [
+                "c1816f8600a0493c"
+            ]
+        ]
     },
     {
         "id": "2731a5d83cfa8bad",

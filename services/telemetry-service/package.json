@@ -1,0 +1,24 @@
+{
+  "name": "smart-ac-telemetry-service",
+  "version": "1.0.0",
+  "description": "Telemetry storage microservice for scalable smart AC IoT system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "iot",
+    "nodejs",
+    "telemetry",
+    "microservice",
+    "smart-ac",
+    "sit729"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
