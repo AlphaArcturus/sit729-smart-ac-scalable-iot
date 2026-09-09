@@ -1,0 +1,21 @@
+{
+  "name": "smart-ac-room-simulator",
+  "version": "1.0.0",
+  "description": "Simulated IoT room telemetry generator for scalable smart air-conditioning project",
+  "main": "room-simulator.js",
+  "scripts": {
+    "start": "node room-simulator.js",
+    "start:small": "node room-simulator.js --rooms 5 --interval 5000",
+    "start:medium": "node room-simulator.js --rooms 20 --interval 3000",
+    "start:large": "node room-simulator.js --rooms 100 --interval 1000"
+  },
+  "keywords": [
+    "iot",
+    "nodejs",
+    "simulation",
+    "smart-ac",
+    "sit729"
+  ],
+  "author": "",
+  "license": "ISC"
+}
