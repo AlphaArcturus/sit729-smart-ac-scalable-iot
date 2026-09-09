@@ -1,0 +1,79 @@
+[
+    {
+        "id": "e58c95b455aa3fff",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e3e620359d4da9e5",
+        "type": "mqtt in",
+        "z": "e58c95b455aa3fff",
+        "name": "Smart AC telemetry input",
+        "topic": "smartac/B01/+/telemetry",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "2731a5d83cfa8bad",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 470,
+        "y": 300,
+        "wires": [
+            [
+                "dcce3ffe79dc21e2"
+            ]
+        ]
+    },
+    {
+        "id": "dcce3ffe79dc21e2",
+        "type": "debug",
+        "z": "e58c95b455aa3fff",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "2731a5d83cfa8bad",
+        "type": "mqtt-broker",
+        "name": "Mosq",
+        "broker": "127.0.0.1",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

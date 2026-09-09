@@ -7,15 +7,20 @@
     "start": "node room-simulator.js",
     "start:small": "node room-simulator.js --rooms 5 --interval 5000",
     "start:medium": "node room-simulator.js --rooms 20 --interval 3000",
-    "start:large": "node room-simulator.js --rooms 100 --interval 1000"
+    "start:large": "node room-simulator.js --rooms 100 --interval 1000",
+    "start:mqtt": "node room-simulator.js --rooms 5 --interval 3000 --mqtt"
   },
   "keywords": [
     "iot",
     "nodejs",
     "simulation",
     "smart-ac",
+    "mqtt",
     "sit729"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "mqtt": "^5.10.4"
+  }
 }

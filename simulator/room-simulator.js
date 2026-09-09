@@ -1,10 +1,19 @@
 // room-simulator.js
 // Simulates IoT room telemetry for the scalable smart air-conditioning project.
-// This is the data collection layer for the prototype.
+// It can print telemetry locally or publish telemetry through MQTT.
+
+const mqtt = require("mqtt");
 
 const DEFAULT_ROOMS = 10;
 const DEFAULT_INTERVAL_MS = 5000;
 const BUILDING_ID = "B01";
+
+const MQTT_BROKER_URL = "mqtt://127.0.0.1:1883";
+const MQTT_TOPIC_PREFIX = "smartac";
+
+function hasFlag(flagName) {
+  return process.argv.includes(flagName);
+}
 
 function getArgumentValue(argumentName, defaultValue) {
   const index = process.argv.indexOf(argumentName);
@@ -113,6 +122,29 @@ function generateTelemetry(roomNumber, sequence) {
   };
 }
 
+function buildTelemetryTopic(telemetry) {
+  return `${MQTT_TOPIC_PREFIX}/${telemetry.buildingId}/${telemetry.roomId}/telemetry`;
+}
+
+function publishTelemetryBatch(client, roomCount, sequence) {
+  console.log(`\n--- MQTT telemetry batch ${sequence} ---`);
+
+  for (let roomNumber = 1; roomNumber <= roomCount; roomNumber++) {
+    const telemetry = generateTelemetry(roomNumber, sequence);
+    const topic = buildTelemetryTopic(telemetry);
+    const payload = JSON.stringify(telemetry);
+
+    client.publish(topic, payload, { qos: 0 }, (error) => {
+      if (error) {
+        console.error(`Publish failed for ${topic}:`, error.message);
+        return;
+      }
+
+      console.log(`Published to ${topic}: ${payload}`);
+    });
+  }
+}
+
 function printTelemetryBatch(roomCount, sequence) {
   console.log(`\n--- Telemetry batch ${sequence} ---`);
 
@@ -122,13 +154,10 @@ function printTelemetryBatch(roomCount, sequence) {
   }
 }
 
-function startSimulator() {
-  const roomCount = getArgumentValue("--rooms", DEFAULT_ROOMS);
-  const intervalMs = getArgumentValue("--interval", DEFAULT_INTERVAL_MS);
-
+function startConsoleSimulator(roomCount, intervalMs) {
   let sequence = 1;
 
-  console.log("Smart AC Room Simulator started");
+  console.log("Smart AC Room Simulator started in console mode");
   console.log(`Building ID: ${BUILDING_ID}`);
   console.log(`Simulated rooms: ${roomCount}`);
   console.log(`Interval: ${intervalMs} ms`);
@@ -140,6 +169,46 @@ function startSimulator() {
     sequence += 1;
     printTelemetryBatch(roomCount, sequence);
   }, intervalMs);
+}
+
+function startMqttSimulator(roomCount, intervalMs) {
+  let sequence = 1;
+
+  console.log("Smart AC Room Simulator started in MQTT mode");
+  console.log(`Broker: ${MQTT_BROKER_URL}`);
+  console.log(`Topic format: smartac/${BUILDING_ID}/{roomId}/telemetry`);
+  console.log(`Simulated rooms: ${roomCount}`);
+  console.log(`Interval: ${intervalMs} ms`);
+  console.log("Press Ctrl + C to stop the simulator.");
+
+  const client = mqtt.connect(MQTT_BROKER_URL);
+
+  client.on("connect", () => {
+    console.log("Connected to MQTT broker");
+
+    publishTelemetryBatch(client, roomCount, sequence);
+
+    setInterval(() => {
+      sequence += 1;
+      publishTelemetryBatch(client, roomCount, sequence);
+    }, intervalMs);
+  });
+
+  client.on("error", (error) => {
+    console.error("MQTT connection error:", error.message);
+  });
+}
+
+function startSimulator() {
+  const roomCount = getArgumentValue("--rooms", DEFAULT_ROOMS);
+  const intervalMs = getArgumentValue("--interval", DEFAULT_INTERVAL_MS);
+  const mqttMode = hasFlag("--mqtt");
+
+  if (mqttMode) {
+    startMqttSimulator(roomCount, intervalMs);
+  } else {
+    startConsoleSimulator(roomCount, intervalMs);
+  }
 }
 
 startSimulator();
