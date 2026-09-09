@@ -1,21 +1,35 @@
 services:
   comfort-service:
     build: ./services/comfort-service
+    container_name: smartac-comfort-service
     ports:
       - "3001:3001"
     environment:
       - NODE_ENV=development
+      - PORT=3001
+    restart: unless-stopped
 
   telemetry-service:
     build: ./services/telemetry-service
+    container_name: smartac-telemetry-service
     ports:
       - "3002:3002"
     environment:
       - NODE_ENV=development
+      - PORT=3002
+    restart: unless-stopped
+    depends_on:
+      - comfort-service
 
   dashboard-service:
     build: ./services/dashboard-service
+    container_name: smartac-dashboard-service
     ports:
       - "3003:3003"
     environment:
       - NODE_ENV=development
+      - PORT=3003
+      - TELEMETRY_SERVICE_URL=http://telemetry-service:3002
+    restart: unless-stopped
+    depends_on:
+      - telemetry-service
