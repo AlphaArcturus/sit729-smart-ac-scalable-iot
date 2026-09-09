@@ -24,15 +24,38 @@
         "y": 300,
         "wires": [
             [
-                "dcce3ffe79dc21e2"
+                "0e38774c872bc372"
             ]
         ]
     },
     {
-        "id": "dcce3ffe79dc21e2",
+        "id": "0e38774c872bc372",
+        "type": "function",
+        "z": "e58c95b455aa3fff",
+        "name": "Validate telemetry",
+        "func": "// Validate telemetry message from simulated smart AC room node\n\nconst data = msg.payload;\n\nfunction invalid(reason) {\n    msg.validation = {\n        valid: false,\n        reason: reason,\n        checkedAt: new Date().toISOString()\n    };\n    msg.payload = {\n        error: reason,\n        originalPayload: data\n    };\n    return [null, msg];\n}\n\n// Check payload exists and is an object\nif (!data || typeof data !== \"object\") {\n    return invalid(\"Payload is missing or not a JSON object\");\n}\n\n// Required text fields\nconst requiredTextFields = [\"eventId\", \"buildingId\", \"roomId\", \"deviceId\", \"timestamp\"];\n\nfor (const field of requiredTextFields) {\n    if (!data[field] || typeof data[field] !== \"string\") {\n        return invalid(`Missing or invalid text field: ${field}`);\n    }\n}\n\n// Required numeric fields\nconst requiredNumberFields = [\"temperatureC\", \"humidityPct\", \"occupancy\", \"co2Ppm\", \"sequence\"];\n\nfor (const field of requiredNumberFields) {\n    if (typeof data[field] !== \"number\" || Number.isNaN(data[field])) {\n        return invalid(`Missing or invalid numeric field: ${field}`);\n    }\n}\n\n// Range checks\nif (data.temperatureC < 0 || data.temperatureC > 50) {\n    return invalid(\"Temperature is outside expected range 0-50C\");\n}\n\nif (data.humidityPct < 0 || data.humidityPct > 100) {\n    return invalid(\"Humidity is outside expected range 0-100%\");\n}\n\nif (data.occupancy < 0 || data.occupancy > 100) {\n    return invalid(\"Occupancy is outside expected range 0-100\");\n}\n\nif (data.co2Ppm < 300 || data.co2Ppm > 5000) {\n    return invalid(\"CO2 is outside expected range 300-5000 ppm\");\n}\n\n// Timestamp freshness check\nconst eventTime = Date.parse(data.timestamp);\n\nif (Number.isNaN(eventTime)) {\n    return invalid(\"Timestamp is not valid ISO date format\");\n}\n\nconst ageMs = Date.now() - eventTime;\nconst maxAgeMs = 5 * 60 * 1000;\n\nif (ageMs > maxAgeMs) {\n    return invalid(\"Telemetry timestamp is older than 5 minutes\");\n}\n\n// Add processing metadata\nmsg.validation = {\n    valid: true,\n    checkedAt: new Date().toISOString()\n};\n\nmsg.payload = {\n    ...data,\n    processing: {\n        validatedBy: \"node-red\",\n        validationStatus: \"valid\",\n        validatedAt: new Date().toISOString()\n    }\n};\n\n// Output 1 = valid, Output 2 = invalid\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 300,
+        "wires": [
+            [
+                "8d194fc2a21ecb0d"
+            ],
+            [
+                "80bb784f4b6960c9"
+            ]
+        ]
+    },
+    {
+        "id": "c1816f8600a0493c",
         "type": "debug",
         "z": "e58c95b455aa3fff",
-        "name": "debug 1",
+        "name": "Valid telemetry",
         "active": true,
         "tosidebar": true,
         "console": false,
@@ -41,8 +64,123 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 780,
-        "y": 300,
+        "x": 1220,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "80bb784f4b6960c9",
+        "type": "debug",
+        "z": "e58c95b455aa3fff",
+        "name": "Invalid telemetry",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "8d194fc2a21ecb0d",
+        "type": "function",
+        "z": "e58c95b455aa3fff",
+        "name": "Classify comfort status",
+        "func": "// Classify comfort status before sending data to microservices\n\nconst data = msg.payload;\n\nlet comfortStatus = \"comfortable\";\nlet severity = \"normal\";\nlet reasons = [];\n\nif (data.occupancy === 0) {\n    comfortStatus = \"empty_room\";\n    severity = \"normal\";\n    reasons.push(\"Room is empty, energy-saving mode can be used\");\n}\n\nif (data.temperatureC >= 30) {\n    comfortStatus = \"too_hot\";\n    severity = \"warning\";\n    reasons.push(\"Temperature is high\");\n}\n\nif (data.temperatureC >= 34) {\n    comfortStatus = \"critical_hot\";\n    severity = \"critical\";\n    reasons.push(\"Temperature is critically high\");\n}\n\nif (data.humidityPct >= 75) {\n    if (severity !== \"critical\") {\n        severity = \"warning\";\n    }\n    reasons.push(\"Humidity is high\");\n}\n\nif (data.co2Ppm >= 1500) {\n    severity = \"warning\";\n    comfortStatus = \"poor_air_quality\";\n    reasons.push(\"CO2 level is high\");\n}\n\nif (data.co2Ppm >= 2000) {\n    severity = \"critical\";\n    comfortStatus = \"critical_air_quality\";\n    reasons.push(\"CO2 level is critically high\");\n}\n\nif (data.occupancy >= 20) {\n    if (severity !== \"critical\") {\n        severity = \"warning\";\n    }\n    reasons.push(\"Room occupancy is high\");\n}\n\nmsg.payload = {\n    ...data,\n    comfortPreCheck: {\n        comfortStatus: comfortStatus,\n        severity: severity,\n        reasons: reasons,\n        checkedAt: new Date().toISOString()\n    }\n};\n\n// Output 1 = normal\n// Output 2 = warning/critical\nif (severity === \"normal\") {\n    return [msg, null];\n}\n\nreturn [null, msg];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1100,
+        "y": 260,
+        "wires": [
+            [
+                "fc6f7dfba4ef9418"
+            ],
+            [
+                "fc6f7dfba4ef9418"
+            ]
+        ]
+    },
+    {
+        "id": "eaf459a8daa785fb",
+        "type": "debug",
+        "z": "e58c95b455aa3fff",
+        "name": "Normal comfort status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "2c58ecdcc19be90f",
+        "type": "debug",
+        "z": "e58c95b455aa3fff",
+        "name": "Comfort warning or alert",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1230,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "fc6f7dfba4ef9418",
+        "type": "http request",
+        "z": "e58c95b455aa3fff",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:3001/comfort/decision",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1390,
+        "y": 260,
+        "wires": [
+            [
+                "e1fb9a95b8fc5d77"
+            ]
+        ]
+    },
+    {
+        "id": "e1fb9a95b8fc5d77",
+        "type": "debug",
+        "z": "e58c95b455aa3fff",
+        "name": "Comfort decision output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1610,
+        "y": 260,
         "wires": []
     },
     {
