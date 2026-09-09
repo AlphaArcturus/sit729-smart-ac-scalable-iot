@@ -1,0 +1,24 @@
+{
+  "name": "smart-ac-dashboard-service",
+  "version": "1.0.0",
+  "description": "Dashboard API and web interface for scalable smart AC IoT system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "iot",
+    "nodejs",
+    "dashboard",
+    "microservice",
+    "smart-ac",
+    "sit729"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
