@@ -38,16 +38,40 @@ docs/
   aws-screenshots/
   node-red-screenshots/
   test-results/
-  
+  ```
+
 ## Planned Scaling Test Targets
 
-The local prototype will be used to confirm the end-to-end IoT pipeline before AWS deployment. The AWS phase will then test how the system behaves as the number of simulated rooms increases.
+The simulator supports configurable room counts and publish intervals. The throughput values below are planned estimates based on this formula:
 
-| Test Level | Simulated Rooms | Publish Interval | Approx. Throughput | Target Outcome |
-|---|---:|---:|---:|---|
-| Baseline | 5 | 3000 ms | ~1.7 msg/sec | Dashboard updates correctly and all services remain healthy |
-| Small Load | 25 | 1000 ms | ~25 msg/sec | Telemetry stats endpoint responds consistently under local Docker |
-| Medium Load | 100 | 1000 ms | ~100 msg/sec | No service crash, telemetry records continue increasing |
-| AWS Scaling Test | 250–500 | 1000 ms | ~250–500 msg/sec | CloudWatch metrics show increased load and scaling activity |
+**Estimated throughput = simulated rooms / publish interval in seconds**
 
-The main response-time target is to keep the telemetry statistics endpoint responsive during increasing load. In the AWS phase, CloudWatch metrics, service logs and scaling activity will be used as evidence.
+### Local baseline test
+
+- Simulated rooms: 5
+- Publish interval: 3000 ms
+- Estimated throughput: about 1.7 messages/second
+- Target outcome: dashboard updates correctly and all Docker services remain healthy.
+
+### Local small-load test
+
+- Simulated rooms: 25
+- Publish interval: 1000 ms
+- Estimated throughput: about 25 messages/second
+- Target outcome: telemetry records continue increasing, the dashboard remains usable, and the stats endpoint responds normally.
+
+### Local medium-load test
+
+- Simulated rooms: 100
+- Publish interval: 1000 ms
+- Estimated throughput: about 100 messages/second
+- Target outcome: services do not crash, telemetry storage continues, and the dashboard can still show the latest room state.
+
+### AWS scaling test
+
+- Simulated rooms: 250 to 500
+- Publish interval: 1000 ms
+- Estimated throughput: about 250 to 500 messages/second
+- Target outcome: CloudWatch metrics show increased workload, and scaling activity can be captured as evidence.
+
+These are planned scaling targets rather than final measured results. The final report will compare the planned targets with the actual local and AWS test results.
