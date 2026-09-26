@@ -51,6 +51,7 @@ The simulator supports configurable room counts and publish intervals. The throu
 - Simulated rooms: 5
 - Publish interval: 3000 ms
 - Estimated throughput: about 1.7 messages/second
+- Response-time target: telemetry statistics endpoint should respond within 500 ms.
 - Target outcome: dashboard updates correctly and all Docker services remain healthy.
 
 ### Local small-load test
@@ -58,6 +59,7 @@ The simulator supports configurable room counts and publish intervals. The throu
 - Simulated rooms: 25
 - Publish interval: 1000 ms
 - Estimated throughput: about 25 messages/second
+- Response-time target: telemetry statistics endpoint should respond within 750 ms.
 - Target outcome: telemetry records continue increasing, the dashboard remains usable, and the stats endpoint responds normally.
 
 ### Local medium-load test
@@ -65,6 +67,7 @@ The simulator supports configurable room counts and publish intervals. The throu
 - Simulated rooms: 100
 - Publish interval: 1000 ms
 - Estimated throughput: about 100 messages/second
+- Response-time target: telemetry statistics endpoint should respond within 1000 ms.
 - Target outcome: services do not crash, telemetry storage continues, and the dashboard can still show the latest room state.
 
 ### AWS scaling test
@@ -72,6 +75,7 @@ The simulator supports configurable room counts and publish intervals. The throu
 - Simulated rooms: 250 to 500
 - Publish interval: 1000 ms
 - Estimated throughput: about 250 to 500 messages/second
+- Response-time target: public service endpoints should remain responsive within 2000 ms during increased workload.
 - Target outcome: CloudWatch metrics show increased workload, and scaling activity can be captured as evidence.
 
 These are planned scaling targets rather than final measured results. The final report will compare the planned targets with the actual local and AWS test results.
