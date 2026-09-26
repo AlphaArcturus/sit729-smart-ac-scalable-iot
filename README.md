@@ -79,3 +79,23 @@ The simulator supports configurable room counts and publish intervals. The throu
 - Target outcome: CloudWatch metrics show increased workload, and scaling activity can be captured as evidence.
 
 These are planned scaling targets rather than final measured results. The final report will compare the planned targets with the actual local and AWS test results.
+## Distinction Final Deployment Summary
+
+The Smart AC IoT prototype was extended from a local MQTT, Node-RED and Docker system into an AWS-deployed microservice architecture.
+
+Final deployment work completed:
+- Docker images were built and pushed to Amazon ECR.
+- Three Node.js services were deployed to Amazon ECS/Fargate:
+  - comfort-service
+  - telemetry-service
+  - dashboard-service
+- The full application was deployed as an ECS/Fargate service using `smartac-full-task`.
+- The AWS dashboard was accessed through a public Fargate IP.
+- Test telemetry was submitted to the AWS telemetry service and displayed on the dashboard.
+- CloudWatch log groups were configured for the ECS services with short retention.
+- ECS Service Auto Scaling was configured for the comfort-service.
+- The comfort-service scaled from 1 running Fargate task to 3 running Fargate tasks during the scaling test.
+
+The `aws/` folder contains sanitised example ECS task definitions and scaling policy files. These examples use `<account-id>` placeholders and do not contain AWS access keys, session tokens or credentials.
+
+Security note: AWS credentials, access keys, session tokens, `.env` files and local deployment files are excluded from GitHub using `.gitignore`.

@@ -29,3 +29,15 @@ Thumbs.db
 
 # Node-RED local runtime files
 .node-red/
+# Local AWS deployment files - do not commit
+comfort-task.json
+smartac-full-task.json
+comfort-cpu-scaling-policy.json
+comfort-scaling-policy.json
+credentials
+credentials.txt
+*.pem
+*.key
+aws_access_keys.csv
+.env
+.env.*

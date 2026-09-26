@@ -1,0 +1,40 @@
+{
+  "family": "smartac-comfort-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::<account-id>:role/LabRole",
+  "taskRoleArn": "arn:aws:iam::<account-id>:role/LabRole",
+  "containerDefinitions": [
+    {
+      "name": "comfort-service",
+      "image": "<account-id>.dkr.ecr.us-east-1.amazonaws.com/smartac-comfort-service:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3001,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "PORT",
+          "value": "3001"
+        },
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/smartac-comfort-service",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
