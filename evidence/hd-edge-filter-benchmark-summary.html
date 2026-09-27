@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HD Edge Filtering Benchmark Summary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 14px;
+      background: #f5f7fa;
+      color: #1f2933;
+      font-size: 15px;
+    }
+
+    .page {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #12395b;
+      font-size: 24px;
+      margin: 0 0 10px 0;
+    }
+
+    h2 {
+      color: #12395b;
+      font-size: 18px;
+      margin: 0 0 8px 0;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #d7dee8;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .compact-text {
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      background: #eef6ff;
+      border: 1px solid #b8d7f3;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .metric .label {
+      font-size: 13px;
+    }
+
+    .metric .value {
+      font-size: 26px;
+      font-weight: bold;
+      color: #0b395d;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    th {
+      background: #1f5d8c;
+      color: white;
+      text-align: left;
+      padding: 7px;
+    }
+
+    td {
+      border: 1px solid #cfd8e3;
+      padding: 7px;
+      background: white;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #0b395d;
+    }
+
+    .good {
+      font-weight: bold;
+      color: #166534;
+    }
+
+    .bar-container {
+      background: #e6edf5;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 22px;
+    }
+
+    .bar {
+      height: 22px;
+      line-height: 22px;
+      color: white;
+      padding-left: 8px;
+      font-weight: bold;
+      font-size: 12px;
+      background: #2b8a3e;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>HD Benchmark: Adaptive Edge Filtering Across Building Conditions</h1>
+
+  <div class="card">
+    <h2>Research Technique Applied</h2>
+    <p class="compact-text">
+      This benchmark evaluates an <span class="highlight">adaptive edge filtering</span> technique for the Smart AC IoT system.
+      The baseline design forwards every telemetry event to the cloud. The adaptive design forwards all warning and critical
+      comfort events, while sampling comfortable and empty-room events at the edge.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Overall Findings</h2>
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="label">Scenarios tested</div>
+        <div class="value">3</div>
+      </div>
+      <div class="metric">
+        <div class="label">Sample rates tested</div>
+        <div class="value">3</div>
+      </div>
+      <div class="metric">
+        <div class="label">Reduction range</div>
+        <div class="value">26.7–76%</div>
+      </div>
+      <div class="metric">
+        <div class="label">Critical/warning preserved</div>
+        <div class="value">100%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Benchmark Results</h2>
+    <table>
+      <tr>
+        <th>Scenario</th>
+        <th>Low-priority sample rate</th>
+        <th>Baseline cloud events</th>
+        <th>Adaptive cloud events</th>
+        <th>Edge filtered events</th>
+        <th>Cloud request reduction</th>
+        <th>Critical preserved</th>
+        <th>Warning preserved</th>
+      </tr>
+      <tr>
+        <td>Normal building day</td>
+        <td>1 in 3</td>
+        <td>1000</td>
+        <td>533</td>
+        <td>467</td>
+        <td>46.7%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Normal building day</td>
+        <td>1 in 5</td>
+        <td>1000</td>
+        <td>440</td>
+        <td>560</td>
+        <td>56%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Normal building day</td>
+        <td>1 in 10</td>
+        <td>1000</td>
+        <td>370</td>
+        <td>630</td>
+        <td>63%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Busy warm afternoon</td>
+        <td>1 in 3</td>
+        <td>1000</td>
+        <td>733</td>
+        <td>267</td>
+        <td>26.7%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Busy warm afternoon</td>
+        <td>1 in 5</td>
+        <td>1000</td>
+        <td>680</td>
+        <td>320</td>
+        <td>32%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Busy warm afternoon</td>
+        <td>1 in 10</td>
+        <td>1000</td>
+        <td>640</td>
+        <td>360</td>
+        <td>36%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Mostly stable after control action</td>
+        <td>1 in 3</td>
+        <td>1000</td>
+        <td>433</td>
+        <td>567</td>
+        <td>56.7%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Mostly stable after control action</td>
+        <td>1 in 5</td>
+        <td>1000</td>
+        <td>320</td>
+        <td>680</td>
+        <td>68%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+      <tr>
+        <td>Mostly stable after control action</td>
+        <td>1 in 10</td>
+        <td>1000</td>
+        <td>240</td>
+        <td>760</td>
+        <td>76%</td>
+        <td class="good">100%</td>
+        <td class="good">100%</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Reduction Comparison</h2>
+    <p><strong>Normal building day, 1 in 5 sampling: 56%</strong></p>
+    <div class="bar-container"><div class="bar" style="width:56%;">56%</div></div>
+
+    <p><strong>Busy warm afternoon, 1 in 5 sampling: 32%</strong></p>
+    <div class="bar-container"><div class="bar" style="width:32%;">32%</div></div>
+
+    <p><strong>Mostly stable after control action, 1 in 5 sampling: 68%</strong></p>
+    <div class="bar-container"><div class="bar" style="width:68%;">68%</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Interpretation</h2>
+    <p class="compact-text">
+      The adaptive edge filtering policy reduced cloud-forwarded events in all tested scenarios while preserving
+      all critical and warning events. The reduction was smaller during a busy warm afternoon because more events
+      were important and had to be forwarded. The reduction was highest after the building stabilised because more
+      events were low-priority and could be filtered or sampled at the edge. This supports the HD argument that
+      cloud-edge filtering can reduce cloud workload before ECS/Fargate auto-scaling is required.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
